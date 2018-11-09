@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block body %}
+	<h4>Congratulations! You took {{takeTime}} seconds.</h4>
+	
+	<p>You're a winner!</p>
+
+	<div>Well done, you've won!</div>
+	<br>	
+	<form action="/record" method="POST">	
+		<div>Enter your name: <input type="text" name="username"/></div><br>
+		<input type="submit" value="Record score!"/>
+	</form>
+{% endblock %}

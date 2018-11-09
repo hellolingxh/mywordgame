@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block body %}
+	<h3>Hi, welcome to there play the word game.</h3>
+	<div>The clock is ticking...</div>
+	<div>Your word is:<strong> {{tips_word}}</strong></div>
+        <form action='/process' method='POST'>
+            <div>Enter your seven words in this box, separating each word by a space:</div>
+	    <input type='text' name='user_input_words'><br>
+            <input type='submit' value='Done!'>
+        </form>
+{% endblock %}

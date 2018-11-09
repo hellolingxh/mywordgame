@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block body %}
+	<div>You were placed in position {{ ranke }} out of {{ count }} players</div>
+	<h4>Here's the top ten socres:</h4>
+	<table>
+		<thead>
+			<tr>
+				<th>Position</th>
+				<th>Time</th>
+				<th width="200px">Who</th>
+				<th>Sourceword</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for i in range(0,toplist|length) %}
+
+			<tr align="center">
+				<td>{{ i+1 }}</td>
+				<td>{{ toplist[i][0] }}</td>
+				<td>{{ toplist[i][1] }}</td>
+				<td>{{ toplist[i][2] }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	
+	<br>
+	<a href="/play">Play again?</a><br>
+	<br>
+	<a href="/index">Review the rules</a>
+
+{% endblock %}
