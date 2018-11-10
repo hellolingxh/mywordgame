@@ -8,7 +8,7 @@ app = Flask(__name__)  # "dunder name".
 app.secret_key = os.urandom(32)
 
 dictdata = []
-with open("/usr/share/dict/words") as lf:
+with open("/usr/share/dict/words", encoding="utf-8") as lf:
     for line in lf.readlines():
         dictdata.append(line.lower().strip("\n"))
 
@@ -23,7 +23,7 @@ def index():
 
 @app.route("/play")
 def play():
-    random_word = genRandomWord()
+    random_word = genRandomWord() #"hermaphroditic" 
     session["tips_word"] = random_word
     print(random_word)
     tick_start = time.time()
@@ -55,6 +55,10 @@ def process():
 
     misspelt_errors = checkMissPeltOfWord(user_words_array)
 
+    duplicate_errors = checkDuplicateError(user_words_array)
+
+    checkSourceError = checkSameSourceError(user_words_array, tips_word)
+
     errors = []
 
     if len(array_length_errors) > 0:
@@ -81,6 +85,18 @@ def process():
             )
         )
 
+    if len(duplicate_errors) > 0:
+        errors.append(
+            "You have duplicates in your list: {duplicates}".format(
+                duplicates=" ".join(duplicate_errors)
+            )
+        )
+
+    if checkSourceError == 1:
+        errors.append(
+            "You cannot use the source word: {sourceword}".format(sourceword=tips_word)
+        )
+
     print("There are errors here:", errors)
 
     if len(errors) > 0:
@@ -96,36 +112,32 @@ def record():
     tips_word = session["tips_word"]
 
     print("take tim:", takeTime)
-    time_records = {}
-    word_records = {}
-
+    records = []
+    players = []
     entry = "{time}\t{name}\t{sourceword}".format(
         time=takeTime, name=username, sourceword=tips_word
     )
-    with open("records.log", "a") as rec:
+    with open("records.log", "a", encoding="utf-8") as rec:
         print(entry, file=rec)
 
-    with open("records.log") as lf:
+    with open("records.log", encoding="utf-8") as lf:
         for recordData in lf.readlines():
             print(recordData)
-            row = recordData.split("\t")
-            if row[1] in time_records:
-                if row[0] < time_records[row[1]]:
-                    time_records[row[1]] = (int)(row[0])
-                    word_records[row[1]] = row[2].strip("\n")
-            else:
-                time_records[row[1]] = row[0]
-                word_records[row[1]] = row[2].strip("\n")
-    print(time_records)
-    print(word_records)
+            row = recordData.strip("\n").split("\t")
+            record_item = (float(row[0]), row[1], row[2])
+            records.append(record_item)
+            if row[1] not in players:
+                players.append(row[1])
 
-    total = len(time_records)
+    total = len(players)
 
-    list = sorted(time_records.items(), key=lambda d: float(d[1]))
+    list = sorted(records, key=lambda tup: tup[0])
 
     ranke = -1
     for i in range(0, len(list)):
-        if username in list[i][0]:
+        print(username,'--',list[i][1],username==list[i][1])
+        print(tips_word,'--',tips_word,tips_word==list[i][2]) 
+        if username == list[i][1] and tips_word == list[i][2]:
             ranke = i
             break
     if ranke != -1:
@@ -138,7 +150,7 @@ def record():
     results = []
 
     for item in list:
-        row = (item[1], item[0], word_records[item[0]])
+        row = (item[0], item[1], item[2])
         results.append(row)
     print(results)
     return render_template("toplist.html", toplist=results, count=total, ranke=ranke)
@@ -207,6 +219,24 @@ def checkMissPeltOfWord(user_words_array):
         else:
             misspelt_errors.append(user_word)
     return misspelt_errors
+
+
+def checkDuplicateError(user_words_array):
+    duplicate_errors = []
+    dupCounter = Counter(user_words_array)
+
+    for key in dupCounter:
+        value = dupCounter[key]
+        if value > 1:
+            duplicate_errors.append(key)
+    return duplicate_errors
+
+
+def checkSameSourceError(user_words_array, sourceword):
+    for ele in user_words_array:
+        if ele == sourceword:
+            return 1
+    return 0
 
 
 app.run(debug=True)
