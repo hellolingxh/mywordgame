@@ -104,7 +104,7 @@ def process():
     if len(errors) > 0:
         return render_template("errors.html", error_tips=errors)
 
-    return render_template("success.html", user_words=user_words, takeTime=take_time)
+    return render_template("success.html", takeTime=take_time)
 
 @app.route("/record", methods=["POST"])
 def record():
