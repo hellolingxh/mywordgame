@@ -17,6 +17,8 @@ print("init data")
 
 @app.route("/")
 @app.route("/index")
+@app.route("/process", methods=["GET"])
+@app.route("/record", methods=["GET"])
 def index():
     return render_template("index.html")
 
@@ -32,7 +34,6 @@ def play():
         "form.html", the_title="This is a word game", tips_word=random_word
     )
 
-
 @app.route("/process", methods=["POST"])
 def process():
     print(session["tips_word"])
@@ -44,7 +45,7 @@ def process():
 
     tips_letters_freqs = Counter(tips_word)
 
-    user_words = request.form["user_input_words"]
+    user_words = request.form["user_input_words"].lower()
     user_words_array = user_words.split()
 
     invalid_letters = checkInvalidLetters(user_words_array, tips_letters_freqs)
@@ -99,17 +100,22 @@ def process():
 
     print("There are errors here:", errors)
 
+
     if len(errors) > 0:
         return render_template("errors.html", error_tips=errors)
 
     return render_template("success.html", user_words=user_words, takeTime=take_time)
-
 
 @app.route("/record", methods=["POST"])
 def record():
     username = request.form["username"]
     takeTime = session["take_time"]
     tips_word = session["tips_word"]
+
+    #prevent the form submit again by refresh the browser
+    if session.get("last_tips_word") == tips_word:
+        print(session.get("last_tips_word"),'-->',tips_word)
+        return render_template("index.html")
 
     print("take tim:", takeTime)
     records = []
@@ -153,6 +159,9 @@ def record():
         row = (item[0], item[1], item[2])
         results.append(row)
     print(results)
+    
+    session["last_tips_word"] = tips_word #prevent the form submit again by refresh the browser
+
     return render_template("toplist.html", toplist=results, count=total, ranke=ranke)
 
 

@@ -2,11 +2,21 @@
 
 {% block body %}
 	<h3>Hi, welcome to there play the word game.</h3>
-	<div>The clock is ticking...</div>
-	<div>Your word is:<strong> {{tips_word}}</strong></div>
+	<p>The clock is ticking...</p>
+	<div style="width:400px">Your word is:<strong> {{tips_word}}</strong> <span style="float:right"><a href="/play">change word</a><span></div>
         <form action='/process' method='POST'>
-            <div>Enter your seven words in this box, separating each word by a space:</div>
-	    <input type='text' name='user_input_words'><br>
+            <p>Enter your seven words in this box, separating each word by a space:</p>
+	    <input type='text' required='required' size='40' style='height:25px' name='user_input_words'><br><br>
             <input type='submit' value='Done!'>
         </form>
+	
+	<h4>Notice:</h4>
+	<ul>
+                <li>Each word is only made up from the letters contained within the sourceword.</li>
+                <li>Each word exists within the dictionary (i.e., it's a “real” word).</li>
+                <li>The words all have three letters or more.</li>
+                <li>There are no duplicate words.</li>
+                <li>None of the seven words is the source word.</li>
+                <li>And don't forget: case is NOT significiant (Pet, PET, and pet are the *same* word).</li>
+        </ul>
 {% endblock %}
