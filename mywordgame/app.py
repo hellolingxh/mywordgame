@@ -27,7 +27,7 @@ def index():
 def play():
     random_word = genRandomWord() #"hermaphroditic" 
     session["tips_word"] = random_word
-    print(random_word)
+    print('tips word','-->',random_word)
     tick_start = time.time()
     session["tick_start"] = tick_start
     return render_template(
@@ -36,7 +36,7 @@ def play():
 
 @app.route("/process", methods=["POST"])
 def process():
-    print(session["tips_word"])
+    print('tips word in session','-->',session["tips_word"])
 
     take_time = takeTime()
     session["take_time"] = take_time
@@ -117,15 +117,16 @@ def record():
         print(session.get("last_tips_word"),'-->',tips_word)
         return render_template("index.html")
 
-    print("take tim:", takeTime)
-    records = []
-    players = []
+    records = []  #That contains all record from records.log
+    players = []  #That save and count players, the same player could have many records.
+
     entry = "{time}\t{name}\t{sourceword}".format(
         time=takeTime, name=username, sourceword=tips_word
     )
+
     with open("records.log", "a", encoding="utf-8") as rec:
         print(entry, file=rec)
-
+    
     with open("records.log", encoding="utf-8") as lf:
         for recordData in lf.readlines():
             print(recordData)
@@ -135,7 +136,7 @@ def record():
             if row[1] not in players:
                 players.append(row[1])
 
-    total = len(players)
+    total = len(players) #Find the number of the players
 
     list = sorted(records, key=lambda tup: tup[0])
 
@@ -147,22 +148,14 @@ def record():
             ranke = i
             break
     if ranke != -1:
-        ranke += 1
+        ranke += 1  #Because the i in loop from 0
 
     if len(list) >= 10:
         list = list[0:10]
-    print("------")
-    print(list)
-    results = []
-
-    for item in list:
-        row = (item[0], item[1], item[2])
-        results.append(row)
-    print(results)
     
     session["last_tips_word"] = tips_word #prevent the form submit again by refresh the browser
 
-    return render_template("toplist.html", toplist=results, count=total, ranke=ranke)
+    return render_template("toplist.html", toplist=list, count=total, ranke=ranke)
 
 
 def takeTime():
@@ -172,9 +165,9 @@ def takeTime():
 
     take_time = ((int)((tick_end - tick_start) * 100)) / 100
 
-    print("tickend:", tick_end)
-    print("tickstart:", tick_start)
-    print("tak time:", take_time)
+    print("tickend",'-->', tick_end)
+    print("tickstart",'-->', tick_start)
+    print("tak time",'-->', take_time)
 
     return take_time
 
@@ -183,7 +176,8 @@ def genRandomWord():
     tips_word = ""
     while len(tips_word) < 7:
         tips_word = dictdata[randint(0, 99000)]
-    print(tips_word)
+
+    #if the word has "'" we need to replace it. for example: zinger's --> zingers
     return tips_word.replace("'", "")
 
 
