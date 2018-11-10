@@ -1,6 +1,6 @@
 # mywordgame
 **Welcome to visit my word game website:** 
-https://github.com/hellolingxh/mywordgame/tree/develop/mywordgame
+http://www.didadadi.com
 
 When started, your WordGame program selects a word of seven or more letters from a dictionary.
 This word is known as the source word. The source word is displayed on screen, and the game
