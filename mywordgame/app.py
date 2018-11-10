@@ -4,7 +4,7 @@ from collections import Counter
 import os
 import time
 
-app = Flask(__name__)  # "dunder name".
+app = Flask(__name__) 
 app.secret_key = b'\xac""\xe4\xc4}\xdb\x06\xd4\xe9+\x93\xc6\x82\xd0l\xfb\x90\xc3^\xb9\x9eZ\xf1(K\x18\xf5\xd1m\xa2\xa9'  # os.urandom(32)
 
 dictdata = []
