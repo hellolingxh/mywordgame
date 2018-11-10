@@ -9,7 +9,7 @@ contained within the source word, and they have to do this as quickly as possibl
 entered into the game which then – once the seven words are entered – records another timestamp
 value.
 
-##Upon receipt of the seven words, the game checks to ensure that:
+## Upon receipt of the seven words, the game checks to ensure that:
 1. each word is made up from letters (and only the letters) contained within the source word,
 2. each word exists within the dictionary (i.e., it's a “real” word),
 3. the words all have three letters or more,
@@ -25,7 +25,7 @@ within the Top Scorers List then displays the current “Top 10” entries from 
 And, of course, because this game is so cool, the user willingly accepts your kind offer to play again
 (or, if they’re a spoilsport, they quit!).
 
-##Points to note:
+## Points to note:
 1. If one or more of the seven words are invalid, the game needs to tell the user which words
 were wrong, and display an appropriate “error” message.
 2. If the user does not make the Top 10, they should be told where they were placed within the
