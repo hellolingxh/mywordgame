@@ -4,7 +4,7 @@ from collections import Counter
 import os
 import time
 
-app = Flask(__name__) 
+app = Flask(__name__)
 app.secret_key = b'\xac""\xe4\xc4}\xdb\x06\xd4\xe9+\x93\xc6\x82\xd0l\xfb\x90\xc3^\xb9\x9eZ\xf1(K\x18\xf5\xd1m\xa2\xa9'  # os.urandom(32)
 
 dictdata = []
@@ -25,18 +25,19 @@ def index():
 
 @app.route("/play")
 def play():
-    random_word = genRandomWord() #"hermaphroditic" 
+    random_word = genRandomWord()  # "hermaphroditic"
     session["tips_word"] = random_word
-    print('tips word','-->',random_word)
+    print("tips word", "-->", random_word)
     tick_start = time.time()
     session["tick_start"] = tick_start
     return render_template(
         "form.html", the_title="This is a word game", tips_word=random_word
     )
 
+
 @app.route("/process", methods=["POST"])
 def process():
-    print('tips word in session','-->',session["tips_word"])
+    print("tips word in session", "-->", session["tips_word"])
 
     take_time = takeTime()
     session["take_time"] = take_time
@@ -100,11 +101,11 @@ def process():
 
     print("There are errors here:", errors)
 
-
     if len(errors) > 0:
         return render_template("errors.html", error_tips=errors)
 
     return render_template("success.html", takeTime=take_time)
+
 
 @app.route("/record", methods=["POST"])
 def record():
@@ -112,13 +113,15 @@ def record():
     takeTime = session["take_time"]
     tips_word = session["tips_word"]
 
-    #prevent the form submit again by refresh the browser
+    # prevent the form submit again by refresh the browser
     if session.get("last_tips_word") == tips_word:
-        print(session.get("last_tips_word"),'-->',tips_word)
+        print(session.get("last_tips_word"), "-->", tips_word)
         return render_template("index.html")
 
-    records = []  #That contains all record from records.log
-    players = []  #That save and count players, the same player could have many records.
+    records = []  # That contains all record from records.log
+    players = (
+        []
+    )  # That save and count players, the same player could have many records.
 
     entry = "{time}\t{name}\t{sourceword}".format(
         time=takeTime, name=username, sourceword=tips_word
@@ -126,7 +129,7 @@ def record():
 
     with open("records.log", "a", encoding="utf-8") as rec:
         print(entry, file=rec)
-    
+
     with open("records.log", encoding="utf-8") as lf:
         for recordData in lf.readlines():
             print(recordData)
@@ -136,24 +139,26 @@ def record():
             if row[1] not in players:
                 players.append(row[1])
 
-    total = len(players) #Find the number of the players
+    total = len(players)  # Find the number of the players
 
     list = sorted(records, key=lambda tup: tup[0])
 
     ranke = -1
     for i in range(0, len(list)):
-        print(username,'--',list[i][1],username==list[i][1])
-        print(tips_word,'--',tips_word,tips_word==list[i][2]) 
+        print(username, "--", list[i][1], username == list[i][1])
+        print(tips_word, "--", tips_word, tips_word == list[i][2])
         if username == list[i][1] and tips_word == list[i][2]:
             ranke = i
             break
     if ranke != -1:
-        ranke += 1  #Because the i in loop from 0
+        ranke += 1  # Because the i in loop from 0
 
     if len(list) >= 10:
         list = list[0:10]
-    
-    session["last_tips_word"] = tips_word #prevent the form submit again by refresh the browser
+
+    session[
+        "last_tips_word"
+    ] = tips_word  # prevent the form submit again by refresh the browser
 
     return render_template("toplist.html", toplist=list, count=total, ranke=ranke)
 
@@ -165,9 +170,9 @@ def takeTime():
 
     take_time = ((int)((tick_end - tick_start) * 100)) / 100
 
-    print("tickend",'-->', tick_end)
-    print("tickstart",'-->', tick_start)
-    print("tak time",'-->', take_time)
+    print("tickend", "-->", tick_end)
+    print("tickstart", "-->", tick_start)
+    print("tak time", "-->", take_time)
 
     return take_time
 
@@ -177,7 +182,7 @@ def genRandomWord():
     while len(tips_word) < 7:
         tips_word = dictdata[randint(0, 99000)]
 
-    #if the word has "'" we need to replace it. for example: zinger's --> zingers
+    # if the word has "'" we need to replace it. for example: zinger's --> zingers
     return tips_word.replace("'", "")
 
 
